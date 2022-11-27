@@ -26,13 +26,11 @@ local factory = function()
 	 widget       = wibox.widget.textbox,
       },
       layout = wibox.layout.align.horizontal,
-      
       set_set = function(self, val)
 	 -- self.tg:add_value(tonumber(val), 1)
 	 self.tb.text  = tonumber(val).."°C"
       end,
    }
-   
    gears.timer {
       timeout   = 10,
       call_now  = true,

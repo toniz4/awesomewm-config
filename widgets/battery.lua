@@ -17,7 +17,6 @@ local factory = function()
 	       paddings         = 4,
             },
 
-	    id            = "div",
             forced_width  = 12,
             direction     = 'east',
             layout        = wibox.container.rotate,
@@ -30,8 +29,8 @@ local factory = function()
         layout = wibox.layout.align.horizontal,
 
         set_set = function(self, val)
-            self.tb.text  = tonumber(val).."%"
-            self.div.pb.value = tonumber(val)
+	   self:get_children_by_id('tb')[1].text = tonumber(val).."%"
+	   self:get_children_by_id('pb')[1].value = tonumber(val)
         end,
     }
 

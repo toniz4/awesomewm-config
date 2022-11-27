@@ -28,6 +28,23 @@ local widgets = require("widgets")
 local helpers = require("helpers")
 local utils = require("utils")
 
+function client_menu ()
+   clients = {}
+   for i, c in pairs(client.get()) do
+      if not awful.rules.match_any(c, {instance = { "scratch", "umpv", "music"}}) then
+	 clients[i] =
+	    {c.name,
+	     function()
+		c.first_tag:view_only()
+		client.focus = c
+	     end,
+	     c.icon
+	    }
+      end
+   end
+   awful.menu(clients):show()
+end
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -56,9 +73,24 @@ end
 -- {{{ Variable definitions
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xst"
+terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
+
+naughty.config.defaults.border_width = beautiful.notification_border_width
+
+function naughty.config.notify_callback(args)
+  local c = client.focus
+  if c then
+     if c.fullscreen and args.timeout ~= 0 then
+	naughty.suspend()
+	return
+     else
+	naughty.resume()
+	return args
+     end
+  end
+end
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -130,20 +162,26 @@ local tasklist_buttons = gears.table.join(
 end))
 
 function set_wallpaper(s)
-    if beautiful.wallpaper then
-        local wallpaper = beautiful.wallpaper
+   if beautiful.wallpaper then
+      local wallpaper = beautiful.wallpaper
 
-	surf = gears.surface.load_uncached(wallpaper)
 
-	local w, h = gears.surface.get_size(surf)
+      if not gears.filesystem.file_readable(wallpaper) then
+	 gears.wallpaper.set(wallpaper, s)
+	 return
+      end
 
-	-- If the image is small, tile it
-	if w < 500 or h < 500 then
-	   gears.wallpaper.tiled(surf, s)
-	else
-	   gears.wallpaper.maximized(surf, s, true)
-	end
-    end
+      surf = gears.surface.load_uncached(wallpaper)
+
+      local w, h = gears.surface.get_size(surf)
+
+      -- If the image is small, tile it
+      if w < 500 or h < 500 then
+	 gears.wallpaper.tiled(surf, s)
+      else
+	 gears.wallpaper.maximized(surf, s, true)
+      end
+   end
 end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -185,8 +223,9 @@ awful.screen.connect_for_each_screen(function(s)
         screen  = s,
 	filter  = awful.widget.taglist.filter.noempty,
         buttons = taglist_buttons,
+
     }
-    
+
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
         screen  = s,
@@ -256,7 +295,6 @@ globalkeys = gears.table.join(
 	 myvolume.volume = helpers.alsa.get("Master")["volume"]
       end
    ),
-   
    awful.key({}, "XF86MonBrightnessDown",
       function()
 	 awful.spawn("light -U 10")
@@ -304,7 +342,7 @@ globalkeys = gears.table.join(
 
    awful.key({ modkey, "Shift"}, "t",
       function()
-	 awful.spawn("telegram-desktop")
+	 awful.spawn("kotatogram-desktop")
       end,
       {description = "toggle keep on top", group = "client"}
    ),
@@ -318,7 +356,7 @@ globalkeys = gears.table.join(
 
    awful.key({ modkey }, "i",
       function()
-	 utils.scratch.toggle("xst -n music -e cmus", {instance = "music"}, false)
+	 utils.scratch.toggle("emacsclient -c --frame-parameters='(quote (name . \"music\") (width . 160) (height . 27))' -e '(emms-smart-browse)'", {instance = "music"}, false)
       end,
       {description="open terminal scratchpad", group="awesome"}
    ),
@@ -381,10 +419,16 @@ globalkeys = gears.table.join(
     ),
 
     awful.key({ modkey, "Control" }, "k",
-       function () awful.screen.focus_relative(-1) end,
-              {description = "focus the previous screen", group = "screen"}),
-    awful.key({ modkey,  "Shift"  }, "u", awful.client.urgent.jumpto,
-              {description = "jump to urgent client", group = "client"}),
+       function()
+	  awful.screen.focus_relative(-1)
+       end,
+       {description = "focus the previous screen", group = "screen"}
+    ),
+
+    awful.key({ modkey,  "Shift"  }, "u",
+       awful.client.urgent.jumpto,
+       {description = "jump to urgent client", group = "client"}
+    ),
     awful.key({ modkey,           }, "Tab",
         function ()
             awful.client.focus.history.previous()
@@ -435,16 +479,14 @@ globalkeys = gears.table.join(
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
               {description = "run prompt", group = "launcher"}),
 
+    awful.key({ modkey, "Shift" },            "r",     function () client_menu() end,
+              {description = "run prompt", group = "launcher"}),
+
     awful.key({ modkey }, "x",
               function ()
-                  awful.prompt.run {
-                    prompt       = "Run Lua code: ",
-                    textbox      = awful.screen.focused().mypromptbox.widget,
-                    exe_callback = awful.util.eval,
-                    history_path = awful.util.get_cache_dir() .. "/history_eval"
-                  }
+		 awful.spawn("slock")
               end,
-              {description = "lua execute prompt", group = "awesome"}),
+              {description = "Lock screen", group = "awesome"}),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"})
@@ -586,7 +628,7 @@ awful.rules.rules = {
       properties = { border_width = beautiful.border_width,
                      border_color = beautiful.border_normal,
                      focus = awful.client.focus.filter,
-                     raise = true,
+                     raise = false,
                      keys = clientkeys,
                      buttons = clientbuttons,
                      screen = awful.screen.preferred,
@@ -622,14 +664,15 @@ awful.rules.rules = {
         role = {
           "AlarmWindow",  -- Thunderbird's calendar.
           "ConfigManager",  -- Thunderbird's about:config.
-          "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
+          -- "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
       }, properties = { floating = true }},
 
     { rule_any = { instance = { "scratch", "umpv", "music"} },
-      properties = { floating = true },
+      properties = { floating = true, raise=true},
       callback = function (c)
          awful.placement.centered(c,nil)
+	 c.ontop = true
       end
     },
 
@@ -680,8 +723,13 @@ client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", {raise = false})
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c)
+			 c.border_color = beautiful.border_focus
+end)
+
+client.connect_signal("unfocus", function(c)
+			 c.border_color = beautiful.border_normal
+end)
 
 screen.connect_signal("arrange", function (s)
     local max = s.selected_tag.layout.name == "max"

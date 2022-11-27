@@ -11,23 +11,24 @@ local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
-theme.font          = "cozette 8"
+-- theme.font          = "cozette 8"
+theme.font          = "Go Mono Nerd Font 8"
 
-theme.bg_normal     = "#050505"
-theme.bg_focus      = "#363636"
-theme.bg_urgent     = "#c37474"
+theme.bg_normal     = "#000000"
+theme.bg_focus      = "#323232"
+theme.bg_urgent     = "#ff8059"
 theme.bg_minimize   = theme.bg_normal
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#F0F0F0"
-theme.fg_focus      = "#F0F0f0"
-theme.fg_urgent     = "#F0F0f0"
-theme.fg_minimize   = theme.bg_focus
+theme.fg_normal     = "#FFFFFF"
+theme.fg_focus      = "#FFFFFF"
+theme.fg_urgent     = "#FFFFFF"
+theme.fg_minimize   = "#323232"
 
 theme.useless_gap   = 0
 theme.border_width  = dpi(4)
-theme.border_normal = "#363636"
-theme.border_focus  = "#AC8AAC"
+theme.border_normal = "#323232"
+theme.border_focus  = "#f78fe7"
 theme.border_marked = "#c37474"
 
 theme.graph_bg = theme.bg_normal
@@ -36,7 +37,10 @@ theme.graph_border_color = theme.border_normal
 
 theme.notification_max_width = 450
 theme.notification_icon_size = 150
+theme.notification_bg = theme.bg_normal
 theme.notification_border_width = theme.border_width
+theme.notification_border_color = theme.border_focus
+-- theme.notification
 
 -- There are other variable sets
 -- overriding the default one when
@@ -106,6 +110,7 @@ theme.titlebar_maximized_button_normal_active = themes_path.."default/titlebar/m
 theme.titlebar_maximized_button_focus_active  = themes_path.."default/titlebar/maximized_focus_active.png"
 
 theme.wallpaper = gfs.get_configuration_dir() .. "wallpaper"
+-- theme.wallpaper = "#707470"
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = themes_path.."default/layouts/fairhw.png"
