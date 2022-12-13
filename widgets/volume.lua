@@ -1,11 +1,12 @@
 local wibox = require("wibox")
 local gears = require("gears")
 local awful = require("awful")
-local alsa = require("helpers.alsa")
+-- local alsa = require("helpers.alsa")
+local wpctl = require("utils.wpctl")
 
 local beautiful = require("beautiful")
 
-local factory = function(channel)
+local factory = function(sink)
     local volume = wibox.widget {
         {
             {
@@ -25,12 +26,12 @@ local factory = function(channel)
         },
 	{
 	   id           = "tb",
-	   text         = alsa.get(channel)["volume"],
+	   text         = wpctl.get_volume().volume,
 	   widget       = wibox.widget.textbox,
 	},
 	layout = wibox.layout.align.horizontal,
 	set_volume = function(self, val)
-	   if alsa.get(channel)["muted"] then
+	   if wpctl.get_volume().muted then
 	      self.tb.text = "muted"
 	      self.div.pb.value = val
 	   else
@@ -45,7 +46,7 @@ local factory = function(channel)
         call_now  = true,
         autostart = true,
         callback  = function()
-	   volume.volume = alsa.get(channel)["volume"]
+	   volume.volume = wpctl.get_volume().volume
 	end
     }
 

@@ -27,6 +27,7 @@ require("awful.hotkeys_popup.keys")
 local widgets = require("widgets")
 local helpers = require("helpers")
 local utils = require("utils")
+local wpctl = utils.wpctl
 
 function client_menu ()
    clients = {}
@@ -73,7 +74,7 @@ end
 -- {{{ Variable definitions
 
 -- This is used later as the default terminal and editor to run.
-terminal = "urxvt"
+terminal = "urxvtc"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -99,7 +100,7 @@ end
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
-local myvolume = widgets.volume("Master")
+local myvolume = widgets.volume(wpctl.sink)
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -237,30 +238,30 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ height = 15, position = "bottom", screen = s })
-
-    -- Add widgets to the wibox
-    s.mywibox:setup {
-       layout = wibox.layout.align.horizontal,
-       { -- Left widgets
-	  layout = wibox.layout.fixed.horizontal,
-	  --mylauncher,
-	  s.mytaglist,
-	  s.mypromptbox,
-       },
-       s.mytasklist, -- Middle widget
-       { -- Right widgets
-	  spacing = 5,
-	  layout = wibox.layout.fixed.horizontal,
-	  widgets.temp,
-	  widgets.battery,
-	  myvolume,
-	  widgets.time,
-	  --wibox.widget.systray(),
-	  --mytextclock,
-	  s.mylayoutbox,
-       },
-    }
+    if s == screen.primary then
+       s.mywibox = awful.wibar({ height = 15, position = "bottom", screen = s })
+       s.mywibox:setup {
+	  layout = wibox.layout.align.horizontal,
+	  { -- Left widgets
+	     layout = wibox.layout.fixed.horizontal,
+	     --mylauncher,
+	     s.mytaglist,
+	     s.mypromptbox,
+	  },
+	  s.mytasklist, -- Middle widget
+	  { -- Right widgets
+	     spacing = 5,
+	     layout = wibox.layout.fixed.horizontal,
+	     widgets.temp,
+	     widgets.battery,
+	     myvolume,
+	     widgets.time,
+	     --wibox.widget.systray(),
+	     --mytextclock,
+	     s.mylayoutbox,
+	  },
+       }
+    end
 end)
 -- }}}
 
@@ -272,27 +273,31 @@ root.buttons(gears.table.join(
 ))
 -- }}}
 
+local update_volume_status = function()
+   myvolume.volume = wpctl.get_volume().volume
+end
+
 -- {{{ Key bindings
 globalkeys = gears.table.join(
 
    awful.key({}, "XF86AudioRaiseVolume",
       function()
-	 helpers.alsa.inc("Master", 5)
-	 myvolume.volume = helpers.alsa.get("Master")["volume"]
+	 wpctl.inc(5)
+	 update_volume_status()
       end
    ),
 
    awful.key({}, "XF86AudioLowerVolume",
       function()
-	 helpers.alsa.dec("Master", 5)
-	 myvolume.volume = helpers.alsa.get("Master")["volume"]
+	 utils.wpctl.dec(5)
+	 update_volume_status()
       end
    ),
 
    awful.key({}, "XF86AudioMute",
       function()
-	 helpers.alsa.toggle_mute("Master")
-	 myvolume.volume = helpers.alsa.get("Master")["volume"]
+	 utils.wpctl.toggle_mute(5)
+	 update_volume_status()
       end
    ),
    awful.key({}, "XF86MonBrightnessDown",
@@ -342,7 +347,7 @@ globalkeys = gears.table.join(
 
    awful.key({ modkey, "Shift"}, "t",
       function()
-	 awful.spawn("kotatogram-desktop")
+	 awful.spawn("telegram-desktop")
       end,
       {description = "toggle keep on top", group = "client"}
    ),
@@ -421,6 +426,24 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "k",
        function()
 	  awful.screen.focus_relative(-1)
+       end,
+       {description = "focus the previous screen", group = "screen"}
+    ),
+
+    awful.key({ modkey, "Control", "Shift" }, "j",
+       function()
+	  if client.focus then
+	     client.focus:move_to_screen(1)
+	  end
+       end,
+       {description = "focus the next screen", group = "screen"}
+    ),
+
+    awful.key({ modkey, "Control", "Shift"}, "k",
+       function()
+	  if client.focus then
+	     client.focus:move_to_screen(-1)
+	  end
        end,
        {description = "focus the previous screen", group = "screen"}
     ),
@@ -697,7 +720,7 @@ end
 local handle_new_clients = function(c)
    if not awesome.startup then
       last = awful.client.focus.history.get(c.screen, 1)
-      
+
       if last then
 	 if #awful.client.tiled() > 2 then
 	    append_client(c, last)
