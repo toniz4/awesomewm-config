@@ -8,15 +8,16 @@ local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
+local local_themes_path = gfs.get_configuration_dir() .. "icons/"
 
 local theme = {}
 
 -- theme.font          = "cozette 8"
-theme.font          = "Go Mono Nerd Font 8"
+theme.font          = "Go Mono Nerd Font 13"
 
 theme.bg_normal     = "#000000"
-theme.bg_focus      = "#323232"
-theme.bg_urgent     = "#ff8059"
+theme.bg_focus      = "#303030"
+theme.bg_urgent     = "#ff5f59"
 theme.bg_minimize   = theme.bg_normal
 theme.bg_systray    = theme.bg_normal
 
@@ -26,9 +27,9 @@ theme.fg_urgent     = "#FFFFFF"
 theme.fg_minimize   = "#323232"
 
 theme.useless_gap   = 0
-theme.border_width  = dpi(4)
-theme.border_normal = "#323232"
-theme.border_focus  = "#f78fe7"
+theme.border_width  = dpi(6)
+theme.border_normal = "#303030"
+theme.border_focus  = "#cf7fa7"
 theme.border_marked = "#c37474"
 
 theme.graph_bg = theme.bg_normal
@@ -132,6 +133,9 @@ theme.layout_cornerse = themes_path.."default/layouts/cornersew.png"
 
 theme.progress_bar_bg = "#363636"
 theme.progress_bar_fg = "#AC8AAC"
+
+theme.mpd_play = local_themes_path.."play.png"
+theme.mpd_pause = local_themes_path.."pause.png"
 
 -- Generate Awesome icon:
 theme.awesome_icon = theme_assets.awesome_icon(

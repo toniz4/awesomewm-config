@@ -29,6 +29,9 @@ local helpers = require("helpers")
 local utils = require("utils")
 local wpctl = utils.wpctl
 
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
+
 function client_menu ()
    clients = {}
    for i, c in pairs(client.get()) do
@@ -74,7 +77,7 @@ end
 -- {{{ Variable definitions
 
 -- This is used later as the default terminal and editor to run.
-terminal = "urxvtc"
+terminal = "alacritty"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -100,7 +103,7 @@ end
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
-local myvolume = widgets.volume(wpctl.sink)
+-- local myvolume = widgets.volume(wpctl.sink)
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -127,7 +130,6 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
--- Create a textclock widget
 mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
@@ -162,13 +164,12 @@ local tasklist_buttons = gears.table.join(
                           awful.menu.client_list({ theme = { width = 250 } })
 end))
 
-function set_wallpaper(s)
+function set_wallpaper()
    if beautiful.wallpaper then
       local wallpaper = beautiful.wallpaper
 
-
       if not gears.filesystem.file_readable(wallpaper) then
-	 gears.wallpaper.set(wallpaper, s)
+	 gears.wallpaper.set(wallpaper)
 	 return
       end
 
@@ -178,9 +179,9 @@ function set_wallpaper(s)
 
       -- If the image is small, tile it
       if w < 500 or h < 500 then
-	 gears.wallpaper.tiled(surf, s)
+	 gears.wallpaper.tiled(surf)
       else
-	 gears.wallpaper.maximized(surf, s, true)
+	 gears.wallpaper.maximized(surf, nil, true)
       end
    end
 end
@@ -190,7 +191,6 @@ screen.connect_signal("property::geometry", set_wallpaper)
 
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
-    set_wallpaper(s)
 
       -- Set monocle layout for the first tag
       awful.tag.add("1", {
@@ -209,37 +209,56 @@ awful.screen.connect_for_each_screen(function(s)
 	 })
       end
 
-    -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
-    -- Create an imagebox widget which will contain an icon indicating which layout we're using.
-    -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
     s.mylayoutbox:buttons(gears.table.join(
                            awful.button({ }, 1, function () awful.layout.inc( 1) end),
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
-    -- Create a taglist widget
+
     s.mytaglist = awful.widget.taglist {
         screen  = s,
 	filter  = awful.widget.taglist.filter.noempty,
         buttons = taglist_buttons,
-
     }
 
-    -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons,
-	style = {
-	   align = "center",
-	},
+       screen   = s,
+       filter   = awful.widget.tasklist.filter.currenttags,
+       buttons  = tasklist_buttons,
+       layout   = {
+          layout  = wibox.layout.flex.horizontal
+       },
+       widget_template = {
+          {
+             {
+                {
+                   {
+                      id     = 'icon_role',
+                      widget = wibox.widget.imagebox,
+                   },
+                   top = 5,
+                   bottom = 5,
+                   right = 10,
+                   widget  = wibox.container.margin,
+                },
+                {
+                   id     = 'text_role',
+                   widget = wibox.widget.textbox,
+                },
+                layout = wibox.layout.fixed.horizontal,
+             },
+             widget = wibox.container.place
+          },
+          id     = 'background_role',
+          widget = wibox.container.background,
+       },
     }
 
-    -- Create the wibox
     if s == screen.primary then
-       s.mywibox = awful.wibar({ height = 15, position = "bottom", screen = s })
+       set_wallpaper()
+       s.mywibox = awful.wibar({ position = "bottom", screen = s, height = 35 })
        s.mywibox:setup {
 	  layout = wibox.layout.align.horizontal,
 	  { -- Left widgets
@@ -248,16 +267,29 @@ awful.screen.connect_for_each_screen(function(s)
 	     s.mytaglist,
 	     s.mypromptbox,
 	  },
-	  s.mytasklist, -- Middle widget
+          {
+             {
+                widget = s.mytasklist, -- Middle widget
+             },
+             right = 5,
+             widget  = wibox.container.margin,
+          },
 	  { -- Right widgets
-	     spacing = 5,
-	     layout = wibox.layout.fixed.horizontal,
-	     widgets.temp,
-	     widgets.battery,
-	     myvolume,
-	     widgets.time,
-	     --wibox.widget.systray(),
-	     --mytextclock,
+	     spacing = 20,
+             spacing_widget = {
+                -- color  = '#00ff00',
+                -- shape  = gears.shape.circle,
+                span_ratio = 0.5,
+                widget = wibox.widget.separator,
+             },
+             layout = wibox.layout.fixed.horizontal,
+             widgets.mpd,
+             widgets.volume,
+             widgets.memory,
+             widgets.gpu.temp,
+             widgets.cpu.temp,
+             widgets.cpu.usage,
+             widgets.date,
 	     s.mylayoutbox,
 	  },
        }
@@ -334,7 +366,7 @@ globalkeys = gears.table.join(
 
    awful.key({ modkey }, "s",
       function()
-	 awful.spawn(os.getenv("BROWSER"))
+	 awful.spawn("google-chrome-stable")
       end,
       {description="open browser", group="hotkeys"}
    ),
@@ -354,14 +386,14 @@ globalkeys = gears.table.join(
 
    awful.key({ modkey }, "o",
       function()
-	 utils.scratch.toggle("xst -n scratch", {instance = "scratch"}, false)
+	 utils.scratch.toggle(terminal.." --class scratch", {instance = "scratch"}, false)
       end,
       {description="open terminal scratchpad", group="awesome"}
    ),
 
    awful.key({ modkey }, "i",
       function()
-	 utils.scratch.toggle("emacsclient -c --frame-parameters='(quote (name . \"music\") (width . 160) (height . 27))' -e '(emms-smart-browse)'", {instance = "music"}, false)
+	 utils.scratch.toggle("emacsclient -c --frame-parameters='(quote (name . \"music\") (width . 250) (height . 80))' -e '(emms-smart-browse)'", {instance = "music"}, false)
       end,
       {description="open terminal scratchpad", group="awesome"}
    ),
@@ -464,8 +496,10 @@ globalkeys = gears.table.join(
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
+
     awful.key({ modkey, "Control" }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
+
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
 
@@ -507,7 +541,8 @@ globalkeys = gears.table.join(
 
     awful.key({ modkey }, "x",
               function ()
-		 awful.spawn("slock")
+		 os.execute("sleep 1")
+		 awful.spawn("xset dpms force suspend")
               end,
               {description = "Lock screen", group = "awesome"}),
     -- Menubar
@@ -525,12 +560,12 @@ local function swap_master(c)
 end
 
 clientkeys = gears.table.join(
-    -- awful.key({ modkey,           }, "f",
-    --     function (c)
-    --         c.fullscreen = not c.fullscreen
-    --         c:raise()
-    --     end,
-    --     {description = "toggle fullscreen", group = "client"}),
+    awful.key({ modkey,           }, "f",
+        function (c)
+            c.fullscreen = not c.fullscreen
+            c:raise()
+        end,
+        {description = "toggle fullscreen", group = "client"}),
 
     awful.key({ modkey }, "w",
        function(c)
@@ -644,64 +679,71 @@ root.keys(globalkeys)
 -- }}}
 
 -- {{{ Rules
--- Rules to apply to new clients (through the "manage" signal).
+
+local center_float = function (client)
+   awful.placement.centered(client,nil)
+   client.ontop = true
+end
+
 awful.rules.rules = {
     -- All clients will match this rule.
-    { rule = { },
-      properties = { border_width = beautiful.border_width,
-                     border_color = beautiful.border_normal,
-                     focus = awful.client.focus.filter,
-                     raise = false,
-                     keys = clientkeys,
-                     buttons = clientbuttons,
-                     screen = awful.screen.preferred,
-                     placement = awful.placement.no_overlap+awful.placement.no_offscreen,
-                     size_hints_honor = false
-     }
-    },
-
-    -- Floating clients.
-    { rule_any = {
-        instance = {
-          "DTA",  -- Firefox addon DownThemAll.
-          "copyq",  -- Includes session name in class.
-          "pinentry",
-        },
-        class = {
-          "Arandr",
-          "Blueman-manager",
-          "Gpick",
-          "Kruler",
-          "MessageWin",  -- kalarm.
-          "Sxiv",
-          "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
-          "Wpa_gui",
-          "veromix",
-          "xtightvncviewer"},
-
-        -- Note that the name property shown in xprop might be set slightly after creation of the client
-        -- and the name shown there might not match defined rules here.
-        name = {
-          "Event Tester",  -- xev.
-        },
-        role = {
-          "AlarmWindow",  -- Thunderbird's calendar.
-          "ConfigManager",  -- Thunderbird's about:config.
-          -- "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-        }
-      }, properties = { floating = true }},
-
-    { rule_any = { instance = { "scratch", "umpv", "music"} },
-      properties = { floating = true, raise=true},
-      callback = function (c)
-         awful.placement.centered(c,nil)
-	 c.ontop = true
-      end
-    },
-
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+   {
+      rule = { },
+      properties = {
+         border_width = beautiful.border_width,
+         border_color = beautiful.border_normal,
+         focus = awful.client.focus.filter,
+         raise = false,
+         keys = clientkeys,
+         buttons = clientbuttons,
+         screen = awful.screen.preferred,
+         placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+         size_hints_honor = false
+      }
+   },
+   {
+      rule_any = {
+         instance = {
+            "pinentry",
+         },
+         class = {
+            "Pavucontrol",
+         },
+         name = {
+            "Event Tester", -- xev.
+         },
+         role = {
+            "AlarmWindow",
+            "ConfigManager",
+         }
+      },
+      properties = { floating = true },
+      callback = center_float
+   },
+   {
+      rule_any = {
+         instance = {
+            "scratch",
+            "umpv",
+            "music"}
+      },
+      properties = {
+         floating = true,
+         raise=true
+       },
+      callback = center_float
+   },
+   {
+      rule_any =  {
+         instance = {
+            "scratch"
+         }
+      },
+      properties = {
+         width =  dpi(1500),
+         height = dpi(750)
+      }
+   }
 }
 -- }}}
 
@@ -743,7 +785,7 @@ client.connect_signal("manage", handle_new_clients)
 
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
-    c:emit_signal("request::activate", "mouse_enter", {raise = false})
+                         c:emit_signal("request::activate", "mouse_enter", {raise = false})
 end)
 
 client.connect_signal("focus", function(c)

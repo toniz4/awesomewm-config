@@ -24,11 +24,7 @@ wpctl.get_volume = function()
 end
 
 wpctl.inc = function(val)
-   status = query("get-volume")
-
-   if (status.volume + val) <= 100 then
-      execute("set-volume", val .. "%+")
-   end
+   execute("set-volume", val .. "%+")
 end
 
 wpctl.dec = function(val)
