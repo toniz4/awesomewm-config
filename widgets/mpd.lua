@@ -5,6 +5,7 @@ local widgets = require("vicious.widgets.init")
 local util = require("widgets.util")
 local db = require("gears.debug")
 local beautiful = require("beautiful")
+-- local mpdwid = require("widgets.mpd_vicious")
 
 local icon = wibox.widget {
    id = "icon",
@@ -25,13 +26,19 @@ local mpd = wibox.widget {
    },
    {
       id = "mpd",
-      markup = "cuzinho",
+      markup = "",
       widget = wibox.widget.textbox
    },
    layout = wibox.layout.align.horizontal,
+   set_margin = function(self, val)
+      self.m.left = val
+      self.m.right = val
+   end,
    set_markup = function(self, val)
       if val[2] == "Play" then
          self.m.icon.image = beautiful.mpd_play
+      elseif val[2] == "Stop" then
+         self.m.icon.image = beautiful.mpd_stop
       else
          self.m.icon.image = beautiful.mpd_pause
       end
@@ -42,18 +49,20 @@ local mpd = wibox.widget {
 
 local update = function (widget, args)
    if args["{state}"] == "Stop" then
-      widget.visible = false
-      return 'cu?'
-   else
-      widget.visible = true
       return {
-         ('%s - %s'):format(args["{Artist}"], args["{Title}"]),
+         'Nothing Playing',
+         args["{state}"]
+      }
+   else
+      return {
+          ('Artists: %s Track: %s Genres: %s'):format(args["{Artists}"], args["{Title}"], args["{Genres}"]),
          args["{state}"]
       }
    end
 end
 
 vicious.register(mpd, vicious.widgets.mpd, update, 5)
+
 
 icon:buttons(
    awful.util.table.join(

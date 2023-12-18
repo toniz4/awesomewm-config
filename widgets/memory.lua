@@ -4,7 +4,7 @@ local vicious = require("vicious")
 local widgets = require("vicious.widgets.init")
 local util = require("widgets.util")
 
-local memory = wibox.widget.textbox()
+local memory = util.styled_textarea()
 
 vicious.cache(vicious.widgets.mem)
 

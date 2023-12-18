@@ -5,6 +5,7 @@ return {
    memory = require("widgets.memory"),
    date = require("widgets.date"),
    mpd = require("widgets.mpd"),
+   mode = require("widgets.mode"),
    -- battery = require("widgets.battery"),
    -- time = require("widgets.time"),
    -- temp = require("widgets.temp"),

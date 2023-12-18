@@ -15,21 +15,21 @@ local theme = {}
 -- theme.font          = "cozette 8"
 theme.font          = "Go Mono Nerd Font 13"
 
-theme.bg_normal     = "#000000"
-theme.bg_focus      = "#303030"
-theme.bg_urgent     = "#ff5f59"
-theme.bg_minimize   = theme.bg_normal
+theme.bg_normal     = "#0f0b15"
+theme.bg_focus      = "#2a2f42"
+theme.bg_urgent     = "#f47359"
+theme.bg_minimize   = "#19181f"
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#FFFFFF"
-theme.fg_focus      = "#FFFFFF"
-theme.fg_urgent     = "#FFFFFF"
-theme.fg_minimize   = "#323232"
+theme.fg_normal     = "#b8c6d5"
+theme.fg_focus      = "#b8c6d5"
+theme.fg_urgent     = "#b8c6d5"
+theme.fg_minimize   = "#807c9f"
 
 theme.useless_gap   = 0
 theme.border_width  = dpi(6)
-theme.border_normal = "#303030"
-theme.border_focus  = "#cf7fa7"
+theme.border_normal = "#2a2f42"
+theme.border_focus  = "#5f1f5f"
 theme.border_marked = "#c37474"
 
 theme.graph_bg = theme.bg_normal
@@ -136,6 +136,7 @@ theme.progress_bar_fg = "#AC8AAC"
 
 theme.mpd_play = local_themes_path.."play.png"
 theme.mpd_pause = local_themes_path.."pause.png"
+theme.mpd_stop = local_themes_path.."stop.png"
 
 -- Generate Awesome icon:
 theme.awesome_icon = theme_assets.awesome_icon(

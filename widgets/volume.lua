@@ -4,7 +4,7 @@ local vicious = require("vicious")
 local util = require("widgets.util")
 local wpctl = require("utils.wpctl")
 
-local volume = wibox.widget.textbox()
+local volume = util.styled_textarea()
 
 local update = function(widget, args)
    local muted = args[2] == "🔈"
@@ -31,4 +31,11 @@ volume:buttons(awful.util.table.join(
                         vicious.force({volume})
                   end)))
 
+function volume:update()
+   naughty.notify({title = "updated"})
+   vicious.force(self)
+end
+
 return volume
+
+
