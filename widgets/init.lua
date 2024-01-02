@@ -6,6 +6,8 @@ return {
    date = require("widgets.date"),
    mpd = require("widgets.mpd"),
    mode = require("widgets.mode"),
+   tasklist = require("widgets.tasklist"),
+   layoutbox = require("widgets.layoutbox"),
    -- battery = require("widgets.battery"),
    -- time = require("widgets.time"),
    -- temp = require("widgets.temp"),

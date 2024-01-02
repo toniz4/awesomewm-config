@@ -20,12 +20,13 @@
 ;; Setup
 
 (local mod-key :Mod4)
-(local terminal "alacritty")
+(local terminal "xst")
 (tabbed.spawn_in_tab)
 
 ;; Notifications
 
 (set naughty.config.defaults.border_width beautiful.notification_border_width)
+;; cu-anan
 
 (fn naughty.config.notify_callback [args]
   (let [c client.focus]
@@ -54,6 +55,7 @@
                                                :title "Oops, an error happened!"})
                               (set in-error false)))))
 
+;; cu
 ;; Functions
 
 (fn assoc [table key value]
@@ -244,13 +246,12 @@
                   :group :awesome})
       (awful.key [mod-key] :l
                  (fn []
-                   (movements.right)
-                   ;; (awful.tag.incmwfact 0.05)
-                   )
+                   (movements.right))
                  {:description "increase master width factor"
                   :group :layout})
       (awful.key [mod-key] :h
-                 (fn [] (awful.tag.incmwfact (- 0.05)))
+                 (fn []
+                   (movements.left))
                  {:description "decrease master width factor"
                   :group :layout})
       (awful.key [mod-key :Shift] :h
@@ -409,8 +410,8 @@
                      :screen s}))
    (set s.mypromptbox
         (awful.widget.prompt))
-   (set s.mylayoutbox
-        (awful.widget.layoutbox s))
+   ;; (set s.mylayoutbox (awful.widget.layoutbox s))
+   (set s.mylayoutbox (widgets.layoutbox s))
    (s.mylayoutbox:buttons (gears.table.join (awful.button {} 1
                                                           (fn []
                                                             (awful.layout.inc 1)))
@@ -428,39 +429,39 @@
                                :filter awful.widget.taglist.filter.noempty
                                :screen s}))
    (set s.mytasklist
-        (awful.widget.tasklist {:buttons tasklist-buttons
-                                :filter awful.widget.tasklist.filter.currenttags
-                                :layout {:layout wibox.layout.flex.horizontal}
-                                :screen s
-                                :widget_template {1 {1 {1 {1 {:id :icon_role
-                                                              :widget wibox.widget.imagebox}
-                                                           :bottom 5
-                                                           :right 10
-                                                           :top 5
-                                                           :widget wibox.container.margin}
-                                                        2 {:id :text_role
-                                                           :widget wibox.widget.textbox}
-                                                        :layout wibox.layout.fixed.horizontal}
-                                                     :widget wibox.container.place}
-                                                  :id :background_role
-                                                  :widget wibox.container.background}}))
+        (widgets.tasklist s)
+        ;; (awful.widget.tasklist {:buttons tasklist-buttons
+        ;;                         :filter awful.widget.tasklist.filter.currenttags
+        ;;                         :layout {:layout wibox.layout.flex.horizontal}
+        ;;                         :screen s
+        ;;                         :widget_template {1 {1 {1 {1 {:id :icon_role
+        ;;                                                       :widget wibox.widget.imagebox}
+        ;;                                                    :bottom 5
+        ;;                                                    :right 10
+        ;;                                                    :top 5
+        ;;                                                    :widget wibox.container.margin}
+        ;;                                                 2 {:id :text_role
+        ;;                                                    :widget wibox.widget.textbox}
+        ;;                                                 :layout wibox.layout.fixed.horizontal}
+        ;;                                              :widget wibox.container.place}
+        ;;                                           :id :background_role
+        ;;                                           :widget wibox.container.background}})
+        )
    (when (= s screen.primary)
      (set-wallpaper)
      (set s.mywibox
-          (awful.wibar {:height 35
+          (awful.wibar {:height 40
                         :position :bottom
                         :screen s}))
      (s.mywibox:setup
       (let [left (-> [s.mytaglist
                       widgets.mode
                       s.mypromptbox]
-                     ;; (assoc :ing 20)
                      (assoc :layout wibox.layout.fixed.horizontal))
             middle (-> [{:widget s.mytasklist}]
                        (assoc :right 5)
                        (assoc :widget wibox.container.margin 5))
-            right (-> [
-                       widgets.mpd
+            right (-> [widgets.mpd
                        widgets.volume
                        widgets.memory
                        widgets.gpu.temp
@@ -469,13 +470,9 @@
                        widgets.date
                        s.mylayoutbox]
                       (assoc :layout wibox.layout.fixed.horizontal)
-                      (assoc :spacing 10)
-                      ;; (assoc :spacing_widget {:span_ratio 0.5
-                      ;;                         :widget wibox.widget.separator})
-                      )]
+                      (assoc :spacing 10))]
         (-> [left middle right]
             (assoc :layout wibox.layout.align.horizontal)))))))
-
 
 ;; Client keys
 
@@ -578,7 +575,10 @@
        :properties {:floating true :raise true}
        :rule_any {:instance [:scratch :umpv :music]}}
       {:properties {:height 750 :width 1500}
-       :rule_any {:instance [:scratch]}}])
+       :rule_any {:instance [:scratch]}}
+      ;; {:callback center-float
+      ;;  :rule_any {:floating true}}
+      ])
 
 ;; Signals
 

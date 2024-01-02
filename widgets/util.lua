@@ -4,38 +4,49 @@ local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
 
-local function styled_textarea(text)
-   return wibox.widget {
-      {
-         {
-            {
-               markup = text,
-               id = "main",
-               align = "center",
-               valign = "center",
-               widget = wibox.widget.textbox
-            },
-            id = "m",
-            left   = 10,
-            right  = 10,
-            widget = wibox.container.margin
-         },
-         id = "ma",
-         layout = wibox.container.background,
-         bg = beautiful.bg_focus,
-         -- shape_border_color = beautiful.border_color,
-         -- shape_border_width = 1,
-         shape = gears.shape.rounded_rect,
+function add_margin(widget, margins, markup_fn)
+    return {
+        widget,
+        top = margins and margins.top or 0,
+        bottom = margins and margins.bottom or 0,
+        left = margins and margins.left or 0,
+        right = margins and margins.right or 0,
+        layout = wibox.container.margin,
+        set_markup = markup_fn
+    }
+end
 
-      },
-      top = 5,
-      bottom = 5,
-      widget = wibox.container.margin,
-
-      set_markup = function(self, val)
-         self.ma.m.main.markup = val
-      end
+local function container(child, outer_margin, inner_margin, set_markup_fn)
+   local round = {
+      add_margin(child, {left = inner_margin, right = inner_margin}),
+      layout = wibox.container.background,
+      bg = beautiful.bg_focus,
+      shape = gears.shape.rounded_rect,
    }
+   return add_margin(
+      round,
+      {
+         top = outer_margin,
+         bottom = outer_margin
+      },
+      set_markup_fn)
+end
+
+
+local function styled_textarea(text)
+   local child_widget = {
+      markup = "cu",
+      id = "main",
+      align = "center",
+      valign = "center",
+      widget = wibox.widget.textbox,
+   }
+
+   local markup_fn = function(self, val)
+      self:get_children_by_id("main")[1].markup = val
+   end
+
+   return wibox.widget(container(child_widget, 8, 10, markup_fn))
 end
 
 local function labeled_graph(label, max_value)
@@ -74,8 +85,8 @@ local function labeled_graph(label, max_value)
          shape_clip = true,
          shape = gears.shape.rounded_rect,
       },
-      top = 5,
-      bottom = 5,
+      top = 8,
+      bottom = 8,
       widget = wibox.container.margin,
       set_markup = function(self, val)
          self.ma.m.graph:add_value(val)
@@ -85,5 +96,6 @@ end
 
 return {
    labeled_graph = labeled_graph,
-   styled_textarea = styled_textarea
+   styled_textarea = styled_textarea,
+   container = container
 }

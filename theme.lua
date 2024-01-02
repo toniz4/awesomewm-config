@@ -13,7 +13,7 @@ local local_themes_path = gfs.get_configuration_dir() .. "icons/"
 local theme = {}
 
 -- theme.font          = "cozette 8"
-theme.font          = "Go Mono Nerd Font 13"
+theme.font          = "Go Mono Nerd Font 14"
 
 theme.bg_normal     = "#0f0b15"
 theme.bg_focus      = "#2a2f42"
@@ -55,6 +55,7 @@ theme.notification_border_color = theme.border_focus
 -- hotkeys_[bg|fg|border_width|border_color|shape|opacity|modifiers_fg|label_bg|label_fg|group_margin|font|description_font]
 -- Example:
 --theme.taglist_bg_focus = "#ff0000"
+theme.tasklist_bg_normal = theme.bg_minimize
 
 -- Generate taglist squares:
 --local taglist_square_size = dpi(4)

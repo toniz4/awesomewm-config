@@ -12,40 +12,45 @@ local icon = wibox.widget {
    widget = wibox.widget.imagebox
 }
 
-local mpd = wibox.widget {
-   {
+local function mpd_widget()
+   local child = {
       {
-         id = "icon",
-         widget = icon,
+         {
+            id = "icon",
+            widget = icon,
+         },
+         id = "m",
+         top = 3,
+         bottom = 3,
+         right = 8,
+         widget = wibox.container.margin
       },
-      id = "m",
-      top = 8,
-      bottom = 8,
-      right = 8,
-      widget = wibox.container.margin
-   },
-   {
-      id = "mpd",
-      markup = "",
-      widget = wibox.widget.textbox
-   },
-   layout = wibox.layout.align.horizontal,
-   set_margin = function(self, val)
-      self.m.left = val
-      self.m.right = val
-   end,
-   set_markup = function(self, val)
-      if val[2] == "Play" then
-         self.m.icon.image = beautiful.mpd_play
-      elseif val[2] == "Stop" then
-         self.m.icon.image = beautiful.mpd_stop
-      else
-         self.m.icon.image = beautiful.mpd_pause
-      end
+      {
+         id = "main",
+         markup = "",
+         widget = wibox.widget.textbox
+      },
+      layout = wibox.layout.align.horizontal,
 
-      self.mpd.markup = val[1]
+   }
+
+   local markup_fn = function(self, val)
+      text = self:get_children_by_id("main")[1]
+      icon = self:get_children_by_id("icon")[1]
+      if val[2] == "Play" then
+         icon.image = beautiful.mpd_play
+      elseif val[2] == "Stop" then
+         icon.image = beautiful.mpd_stop
+      else
+         icon.image = beautiful.mpd_pause
+      end
+      text.markup = val[1]
    end
-}
+
+   return wibox.widget(util.container(child, 8, 10, markup_fn))
+end
+
+local mpd = mpd_widget()
 
 local update = function (widget, args)
    if args["{state}"] == "Stop" then
@@ -55,7 +60,7 @@ local update = function (widget, args)
       }
    else
       return {
-          ('Artists: %s Track: %s Genres: %s'):format(args["{Artists}"], args["{Title}"], args["{Genres}"]),
+          ('%s - %s'):format(args["{Artists}"], args["{Title}"]),
          args["{state}"]
       }
    end
@@ -68,6 +73,7 @@ icon:buttons(
    awful.util.table.join(
       awful.button({}, 1,
          function ()
+            println(nil + 10)
             vicious.widgets.mpd.playpause()
             vicious.force({mpd})
       end),
