@@ -177,7 +177,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     if s == screen.primary then
        set_wallpaper()
-       s.mywibox = awful.wibar({ position = "bottom", screen = s, height = 40 })
+       s.mywibox = awful.wibar({ position = "bottom", screen = s, height = s.geometry.height * 0.019 })
 
        local left_widgets = {}
 
