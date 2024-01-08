@@ -2,55 +2,28 @@ local wibox = require("wibox")
 local gears = require("gears")
 local awful = require("awful")
 local beautiful = require("beautiful")
+local util = require("widgets.util")
+local vicious = require("vicious")
 
-local factory = function()
-    local battery = wibox.widget {
-        {
-            {
-	       id               = "pb",
-	       max_value        = 100,
-	       widget           = wibox.widget.progressbar,
-	       color            = beautiful.progress_bar_fg,
-	       background_color = beautiful.progress_bar_bg,
-	       clip             = false,
-	       margins          = 3,
-	       paddings         = 4,
-            },
+local battery = util.styled_textarea()
 
-            forced_width  = 12,
-            direction     = 'east',
-            layout        = wibox.container.rotate,
-        },
-        {
-	   id           = "tb",
-	   text         = "100%",
-	   widget       = wibox.widget.textbox,
-	},
-        layout = wibox.layout.align.horizontal,
+batwidget = wibox.widget.progressbar()
 
-        set_set = function(self, val)
-	   self:get_children_by_id('tb')[1].text = tonumber(val).."%"
-	   self:get_children_by_id('pb')[1].value = tonumber(val)
-        end,
-    }
+-- Create wibox with batwidget
+batbox = wibox.layout.margin(
+    wibox.widget{ { max_value = 1, widget = batwidget,
+                    border_width = 0.5, border_color = "#000000",
+                    color = { type = "linear",
+                              from = { 0, 0 },
+                              to = { 0, 30 },
+                              stops = { { 0, "#AECF96" },
+                                        { 1, "#FF5656" } } } },
+                  forced_height = 10, forced_width = 8,
+                  direction = 'east', color = beautiful.fg_widget,
+                  layout = wibox.container.rotate },
+    1, 1, 3, 3)
 
-    gears.timer {
-        timeout   = 10,
-        call_now  = true,
-        autostart = true,
-        callback  = function()
-            -- You should read it from `/sys/class/power_supply/` (on Linux)
-            -- instead of spawning a shell. This is only an example.
-            awful.spawn.easy_async(
-                {"sh", "-c", "cat /sys/class/power_supply/BAT0/capacity"},
-                function(out)
-                    battery.set = out
-                end
-            )
-        end
-    }
+-- Register battery widget
+vicious.register(batwidget, vicious.widgets.bat, "$2", 61, "BAT0")
 
-    return battery
-end
-
-return factory()
+return battery

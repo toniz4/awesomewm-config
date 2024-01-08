@@ -178,6 +178,38 @@ awful.screen.connect_for_each_screen(function(s)
     if s == screen.primary then
        set_wallpaper()
        s.mywibox = awful.wibar({ position = "bottom", screen = s, height = 40 })
+
+       local left_widgets = {}
+
+       hostname = io.popen("uname -n"):read()
+
+       if hostname == "intus" then
+          left_widgets = {
+             spacing = 10,
+             layout = wibox.layout.fixed.horizontal,
+             widgets.battery,
+             widgets.volume,
+             widgets.memory,
+             widgets.cpu.temp,
+             widgets.cpu.usage,
+             widgets.date,
+	     s.mylayoutbox,
+	  }
+       else
+          left_widgets = {
+             spacing = 10,
+             layout = wibox.layout.fixed.horizontal,
+             widgets.mpd,
+             widgets.volume,
+             widgets.memory,
+             widgets.gpu.temp,
+             widgets.cpu.temp,
+             widgets.cpu.usage,
+             widgets.date,
+	     s.mylayoutbox,
+	  }
+       end
+
        s.mywibox:setup {
 	  {
 	     layout = wibox.layout.fixed.horizontal,
@@ -192,18 +224,7 @@ awful.screen.connect_for_each_screen(function(s)
              left = 10,
              widget  = wibox.container.margin,
           },
-	  {
-             spacing = 10,
-             layout = wibox.layout.fixed.horizontal,
-             widgets.mpd,
-             widgets.volume,
-             widgets.memory,
-             widgets.gpu.temp,
-             widgets.cpu.temp,
-             widgets.cpu.usage,
-             widgets.date,
-	     s.mylayoutbox,
-	  },
+          left_widgets,
 	  layout = wibox.layout.align.horizontal,
        }
     end
