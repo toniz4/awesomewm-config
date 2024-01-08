@@ -28,7 +28,7 @@ local function tasklist(s)
          shape  = gears.shape.rounded_rect,
       },
       layout   = {
-         spacing = 10,
+         spacing = beautiful.widget_margin -2,
          layout  = wibox.layout.flex.horizontal
       },
       widget_template = {
@@ -40,8 +40,8 @@ local function tasklist(s)
                         id     = 'icon_role',
                         widget = wibox.widget.imagebox,
                      },
-                     top = 3,
-                     bottom = 3,
+                     top = 2,
+                     bottom = 2,
                      right = beautiful.widget_margin -2,
                      widget  = wibox.container.margin,
                   },
