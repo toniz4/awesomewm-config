@@ -9,11 +9,18 @@ local dpi = xresources.apply_dpi
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 local local_themes_path = gfs.get_configuration_dir() .. "icons/"
+local utils = require("utils")
 
 local theme = {}
 
 -- theme.font          = "cozette 8"
-theme.font          = "Go Mono Nerd Font 14"
+if utils.hostname() == "intus" then
+   theme.font          = "Go Mono Nerd Font 10"
+   theme.widget_margin = 4
+else
+   theme.widget_margin = 10
+   theme.font          = "Go Mono Nerd Font 14"
+end
 
 theme.bg_normal     = "#0f0b15"
 theme.bg_focus      = "#2a2f42"

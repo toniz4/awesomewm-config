@@ -46,7 +46,7 @@ local function styled_textarea(text)
       self:get_children_by_id("main")[1].markup = val
    end
 
-   return wibox.widget(container(child_widget, 8, 10, markup_fn))
+   return wibox.widget(container(child_widget, beautiful.widget_margin - 2, beautiful.widget_margin, markup_fn))
 end
 
 local function labeled_graph(label, max_value)
@@ -85,8 +85,8 @@ local function labeled_graph(label, max_value)
          shape_clip = true,
          shape = gears.shape.rounded_rect,
       },
-      top = 8,
-      bottom = 8,
+      top = beautiful.widget_margin - 2,
+      bottom = beautiful.widget_margin - 2,
       widget = wibox.container.margin,
       set_markup = function(self, val)
          self.ma.m.graph:add_value(val)

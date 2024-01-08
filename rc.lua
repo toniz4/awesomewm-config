@@ -181,7 +181,7 @@ awful.screen.connect_for_each_screen(function(s)
 
        local left_widgets = {}
 
-       hostname = io.popen("uname -n"):read()
+       hostname = utils.hostname()
 
        if hostname == "intus" then
           left_widgets = {
