@@ -56,6 +56,13 @@ theme.notification_border_color = theme.border_focus
 -- Example:
 --theme.taglist_bg_focus = "#ff0000"
 theme.tasklist_bg_normal = theme.bg_minimize
+theme.calendar_focus_bg_color = theme.border_focus
+
+theme.calendar_normal_border_width = dpi(2)
+theme.calendar_focus_border_width = dpi(2)
+theme.calendar_month_border_width = dpi(2)
+theme.calendar_weekday_border_width = dpi(2)
+
 
 -- Generate taglist squares:
 --local taglist_square_size = dpi(4)

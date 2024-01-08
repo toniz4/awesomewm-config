@@ -73,7 +73,6 @@ icon:buttons(
    awful.util.table.join(
       awful.button({}, 1,
          function ()
-            println(nil + 10)
             vicious.widgets.mpd.playpause()
             vicious.force({mpd})
       end),

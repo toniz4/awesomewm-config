@@ -3,11 +3,27 @@ local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
 
+local tasklist_buttons = gears.table.join(
+   awful.button({ }, 1, function (c)
+         if c == client.focus then
+            c.minimized = true
+         else
+            c:emit_signal(
+               "request::activate",
+               "tasklist",
+               {raise = true}
+            )
+         end
+   end),
+   awful.button({ }, 3, function()
+         awful.menu.client_list({ theme = { width = 250 } })
+end))
+
 local function tasklist(s)
    return awful.widget.tasklist {
       screen   = s,
       filter   = awful.widget.tasklist.filter.currenttags,
-      -- buttons  = tasklist_buttons,
+      buttons  = tasklist_buttons,
       style    = {
          shape  = gears.shape.rounded_rect,
       },
