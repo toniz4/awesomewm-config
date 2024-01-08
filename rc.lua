@@ -185,7 +185,7 @@ awful.screen.connect_for_each_screen(function(s)
 
        if hostname == "intus" then
           left_widgets = {
-             spacing = 10,
+             spacing = beautiful.widget_margin,
              layout = wibox.layout.fixed.horizontal,
              widgets.battery,
              widgets.volume,
@@ -220,8 +220,8 @@ awful.screen.connect_for_each_screen(function(s)
              {
                 widget = s.mytasklist,
              },
-             right = 10,
-             left = 10,
+             right = beautiful.widget_margin,
+             left = beautiful.widget_margin,
              widget  = wibox.container.margin,
           },
           left_widgets,
