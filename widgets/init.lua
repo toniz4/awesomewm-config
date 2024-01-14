@@ -9,6 +9,7 @@ return {
    tasklist = require("widgets.tasklist"),
    layoutbox = require("widgets.layoutbox"),
    battery = require("widgets.battery"),
+   taglist = require("widgets.taglist"),
    -- time = require("widgets.time"),
    -- temp = require("widgets.temp"),
    -- keyboard = require("widgets.keyboard")
