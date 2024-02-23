@@ -8,10 +8,20 @@ local volume = util.styled_textarea()
 
 local update = function(widget, args)
    local muted = args[2] == "🔈"
+   local volume = tonumber(args[1])
+
    if muted then
-      return "muted"
+      return "󰝟 muted"
    end
-   return args[1] .. "%"
+
+   local icon = "󰖀 "
+
+   if volume < 30 then
+      icon = "󰕿 "
+   elseif volume > 70 then
+      icon = "󰕾 "
+   end
+   return icon .. volume .. "%"
 end
 
 vicious.register(volume, vicious.widgets.volume, update, 2, "Master")
@@ -31,10 +41,10 @@ volume:buttons(awful.util.table.join(
                         vicious.force({volume})
                   end)))
 
-function volume:update()
-   naughty.notify({title = "updated"})
-   vicious.force(self)
-end
+-- function volume:update()
+--    naughty.notify({title = "updated"})
+--    vicious.force(self)
+-- end
 
 return volume
 

@@ -16,6 +16,12 @@ function add_margin(widget, margins, markup_fn)
     }
 end
 
+---comment
+---@param child table
+---@param outer_margin number
+---@param inner_margin number
+---@param set_markup_fn function
+---@return table
 local function container(child, outer_margin, inner_margin, set_markup_fn)
    local round = {
       add_margin(child, {left = inner_margin, right = inner_margin}),
@@ -31,7 +37,6 @@ local function container(child, outer_margin, inner_margin, set_markup_fn)
       },
       set_markup_fn)
 end
-
 
 local function styled_textarea(text)
    local child_widget = {

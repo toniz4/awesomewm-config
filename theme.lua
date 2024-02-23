@@ -22,21 +22,23 @@ else
    theme.font          = "Go Mono Nerd Font 14"
 end
 
-theme.bg_normal     = "#0f0b15"
-theme.bg_focus      = "#2a2f42"
+theme.bg_normal     = "#ccdfff"
+theme.bg_focus      = "#efe9dd"
+theme.bg_alt        = "#BFEFFF"
+
 theme.bg_urgent     = "#f47359"
-theme.bg_minimize   = "#19181f"
+theme.bg_minimize   = "#dfd5cf"
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#b8c6d5"
-theme.fg_focus      = "#b8c6d5"
-theme.fg_urgent     = "#b8c6d5"
-theme.fg_minimize   = "#807c9f"
+theme.fg_normal     = "#000000"
+theme.fg_focus      = "#000000"
+theme.fg_urgent     = "#000000"
+theme.fg_minimize   = "#193668"
 
 theme.useless_gap   = 0
 theme.border_width  = dpi(6)
-theme.border_normal = "#2a2f42"
-theme.border_focus  = "#5f1f5f"
+theme.border_normal = "#9f9690"
+theme.border_focus  = "#0031a9"
 theme.border_marked = "#c37474"
 
 theme.graph_bg = theme.bg_normal
@@ -62,7 +64,8 @@ theme.notification_border_color = theme.border_focus
 -- hotkeys_[bg|fg|border_width|border_color|shape|opacity|modifiers_fg|label_bg|label_fg|group_margin|font|description_font]
 -- Example:
 --theme.taglist_bg_focus = "#ff0000"
-theme.tasklist_bg_normal = theme.bg_minimize
+theme.tasklist_bg_normal = theme.bg_focus
+theme.tasklist_bg_focus = theme.bg_alt
 theme.calendar_focus_bg_color = theme.border_focus
 
 theme.calendar_normal_border_width = dpi(2)
@@ -129,22 +132,22 @@ theme.wallpaper = gfs.get_configuration_dir() .. "wallpaper"
 -- theme.wallpaper = "#707470"
 
 -- You can use your own layout icons like this:
-theme.layout_fairh = themes_path.."default/layouts/fairhw.png"
-theme.layout_fairv = themes_path.."default/layouts/fairvw.png"
-theme.layout_floating  = themes_path.."default/layouts/floatingw.png"
-theme.layout_magnifier = themes_path.."default/layouts/magnifierw.png"
-theme.layout_max = themes_path.."default/layouts/maxw.png"
-theme.layout_fullscreen = themes_path.."default/layouts/fullscreenw.png"
-theme.layout_tilebottom = themes_path.."default/layouts/tilebottomw.png"
-theme.layout_tileleft   = themes_path.."default/layouts/tileleftw.png"
-theme.layout_tile = themes_path.."default/layouts/tilew.png"
-theme.layout_tiletop = themes_path.."default/layouts/tiletopw.png"
-theme.layout_spiral  = themes_path.."default/layouts/spiralw.png"
-theme.layout_dwindle = themes_path.."default/layouts/dwindlew.png"
-theme.layout_cornernw = themes_path.."default/layouts/cornernww.png"
-theme.layout_cornerne = themes_path.."default/layouts/cornernew.png"
-theme.layout_cornersw = themes_path.."default/layouts/cornersww.png"
-theme.layout_cornerse = themes_path.."default/layouts/cornersew.png"
+theme.layout_fairh = themes_path.."default/layouts/fairh.png"
+theme.layout_fairv = themes_path.."default/layouts/fairv.png"
+theme.layout_floating  = themes_path.."default/layouts/floating.png"
+theme.layout_magnifier = themes_path.."default/layouts/magnifier.png"
+theme.layout_max = themes_path.."default/layouts/max.png"
+theme.layout_fullscreen = themes_path.."default/layouts/fullscreen.png"
+theme.layout_tilebottom = themes_path.."default/layouts/tilebottom.png"
+theme.layout_tileleft   = themes_path.."default/layouts/tileleft.png"
+theme.layout_tile = themes_path.."default/layouts/tile.png"
+theme.layout_tiletop = themes_path.."default/layouts/tiletop.png"
+theme.layout_spiral  = themes_path.."default/layouts/spiral.png"
+theme.layout_dwindle = themes_path.."default/layouts/dwindle.png"
+theme.layout_cornernw = themes_path.."default/layouts/cornernw.png"
+theme.layout_cornerne = themes_path.."default/layouts/cornerne.png"
+theme.layout_cornersw = themes_path.."default/layouts/cornersw.png"
+theme.layout_cornerse = themes_path.."default/layouts/cornerse.png"
 
 theme.progress_bar_bg = "#363636"
 theme.progress_bar_fg = "#AC8AAC"

@@ -9,7 +9,7 @@ local beautiful = require("beautiful")
 
 local icon = wibox.widget {
    id = "icon",
-   widget = wibox.widget.imagebox
+   widget = wibox.widget.textbox
 }
 
 local function mpd_widget()
@@ -22,7 +22,7 @@ local function mpd_widget()
          id = "m",
          top = 3,
          bottom = 3,
-         right = 8,
+         -- right = 8,
          widget = wibox.container.margin
       },
       {
@@ -38,13 +38,18 @@ local function mpd_widget()
       text = self:get_children_by_id("main")[1]
       icon = self:get_children_by_id("icon")[1]
       if val[2] == "Play" then
-         icon.image = beautiful.mpd_play
+         icon.markup = " "
       elseif val[2] == "Stop" then
-         icon.image = beautiful.mpd_stop
+         icon.markup = " "
       else
-         icon.image = beautiful.mpd_pause
+         icon.markup = " "
       end
-      text.markup = val[1]
+
+      if #val[1] > 40 then
+         text.markup = val[1]:sub(0, 40) .. "..."
+      else
+         text.markup = val[1]
+      end
    end
 
    return wibox.widget(util.container(child, 8, 10, markup_fn))

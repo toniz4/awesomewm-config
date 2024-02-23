@@ -7,6 +7,9 @@ require("awful.autofocus")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
+
+naughty.config.defaults.border_width = beautiful.notification_border_width
+
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
@@ -37,7 +40,6 @@ end
 
 -- Notifications
 
-naughty.config.defaults.border_width = beautiful.notification_border_width
 
 function naughty.config.notify_callback(args)
   local c = client.focus
@@ -158,7 +160,11 @@ awful.screen.connect_for_each_screen(function(s)
 
     if s == screen.primary then
        set_wallpaper()
-       s.mywibox = awful.wibar({ position = "bottom", screen = s, height = s.geometry.height * 0.019 })
+       s.mywibox = awful.wibar({
+             position = "bottom",
+             screen = s,
+             height = s.geometry.height * 0.019
+       })
 
        local left_widgets = {}
 
@@ -181,6 +187,7 @@ awful.screen.connect_for_each_screen(function(s)
              spacing = 10,
              layout = wibox.layout.fixed.horizontal,
              widgets.mpd,
+             widgets.battery,
              widgets.volume,
              widgets.memory,
              widgets.gpu.temp,
@@ -284,7 +291,7 @@ globalkeys = gears.table.join(
 
    awful.key({ modkey }, "s",
       function()
-	 awful.spawn("google-chrome-stable")
+	 awful.spawn("firefox")
       end,
       {description="open browser", group="hotkeys"}
    ),
@@ -410,10 +417,10 @@ globalkeys = gears.table.join(
     ),
     awful.key({ modkey,           }, "Tab",
         function ()
-            awful.client.focus.history.previous()
-            if client.focus then
-                client.focus:raise()
-            end
+           awful.client.focus.history.previous()
+           if client.focus then
+              client.focus:raise()
+           end
         end,
         {description = "go back", group = "client"}),
 
@@ -660,7 +667,7 @@ awful.rules.rules = {
          keys = clientkeys,
          buttons = clientbuttons,
          screen = awful.screen.preferred,
-         placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+         placement = awful.placement.centered + awful.placement.no_overlap + awful.placement.no_offscreen,
          size_hints_honor = false
       }
    },
@@ -724,7 +731,7 @@ end
 
 local handle_new_clients = function(c)
    if not awesome.startup then
-      last = awful.client.focus.history.get(c.screen, 1)
+      local last = awful.client.focus.history.get(c.screen, 1)
 
       if last then
 	 if #awful.client.tiled() > 2 then

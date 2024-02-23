@@ -19,13 +19,27 @@ local tasklist_buttons = gears.table.join(
          awful.menu.client_list({ theme = { width = 250 } })
 end))
 
+local function update_tasklist(widget, c)
+   local bg = widget.background
+   if client.focus == c then
+      bg.bg = beautiful.bg_alt
+      bg.shape_border_width = 3
+   elseif c.minimized then
+      bg.bg = beautiful.bg_minimize
+      bg.shape_border_width = 0
+   else
+      bg.bg = beautiful.bg_focus
+      bg.shape_border_width = 0
+   end
+end
+
 local function tasklist(s)
    return awful.widget.tasklist {
       screen   = s,
       filter   = awful.widget.tasklist.filter.currenttags,
       buttons  = tasklist_buttons,
       style    = {
-         shape  = gears.shape.rounded_rect,
+
       },
       layout   = {
          spacing = beautiful.widget_margin -2,
@@ -55,13 +69,17 @@ local function tasklist(s)
                right = beautiful.widget_margin,
                widget = wibox.container.margin
             },
-            id     = 'background_role',
-            -- color = "#FF0000",
+            id     = 'background',
             widget = wibox.container.background,
+            shape  = gears.shape.rounded_rect,
+            shape_clip = true,
          },
          top = beautiful.widget_margin - 2,
          bottom = beautiful.widget_margin - 2,
          widget  = wibox.container.margin,
+         update_callback = function(self, c3, index, objects)
+            update_tasklist(self, c3)
+         end
       },
    }
 end

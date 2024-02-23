@@ -13,7 +13,7 @@ local update = function(widget, args)
    local used_mem = args[2] / 1024
    local total_swp = args[6] / 1024
    local used_swp = args[7] / 1024
-   return ("Mem: %d/%d Swp: %d/%d"):format(used_mem, total_mem, total_swp, used_swp)
+   return ("󰍛 %dGB/%dGB %dGB/%dGB"):format(used_mem, total_mem, total_swp, used_swp)
 end
 
 vicious.register(memory, vicious.widgets.mem, update, 13)

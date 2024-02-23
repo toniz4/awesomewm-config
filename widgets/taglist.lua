@@ -22,12 +22,17 @@ local taglist_buttons = gears.table.join(
 
 local function update_tag_widget(widget, tag)
    widget:get_children_by_id('text')[1].markup = tag.name
+   -- widget.background.shape_border_color = beautiful.fg_normal
+
    if tag.selected then
-      widget.background.bg = beautiful.bg_focus
+      widget.background.bg = beautiful.bg_alt
+      widget.background.shape_border_width = 4
    elseif tag.urgent then
       widget.background.bg = beautiful.bg_urgent
+      widget.background.shape_border_width = 0
    else
-      widget.background.bg = beautiful.bg_normal
+      widget.background.bg = beautiful.bg_focus
+      widget.background.shape_border_width = 0
    end
 end
 
@@ -44,8 +49,13 @@ local function taglist(s)
             {
                {
                   {
-                     id     = 'text',
-                     widget = wibox.widget.textbox,
+                     {
+                        id     = 'text',
+                        widget = wibox.widget.textbox,
+                     },
+                     left  = beautiful.widget_margin - 4,
+                     right = beautiful.widget_margin - 4,
+                     widget = wibox.container.margin
                   },
                   layout = wibox.layout.fixed.horizontal,
                },
@@ -56,23 +66,23 @@ local function taglist(s)
             id     = 'background',
             widget = wibox.container.background,
             shape  = gears.shape.rounded_rect,
+            shape_clip = true,
          },
          widget = wibox.container.margin,
+         left  = beautiful.widget_margin - 2,
          top  = beautiful.widget_margin - 2,
          bottom = beautiful.widget_margin - 2,
-         create_callback = function(self, c3, index, objects) --luacheck: no unused args
+         create_callback = function(self, c3, index, objects)
             update_tag_widget(self, c3)
-            -- c3:connect_signal('property::urgent', function()
-            --                      self.background.bg = "#FF0000"
-            -- end)
             self:connect_signal('mouse::enter', function()
-                                   self.background.bg = beautiful.border_focus
+                                   self.background.shape_border_width = 4
+                                   -- self.background.shape_border_color = beautiful.border_focus
             end)
             self:connect_signal('mouse::leave', function()
                                    update_tag_widget(self, c3)
             end)
          end,
-         update_callback = function(self, c3, index, objects) --luacheck: no unused args
+         update_callback = function(self, c3, index, objects)
             update_tag_widget(self, c3)
          end,
       },
