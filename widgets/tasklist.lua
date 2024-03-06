@@ -23,7 +23,7 @@ local function update_tasklist(widget, c)
    local bg = widget.background
    if client.focus == c then
       bg.bg = beautiful.bg_alt
-      bg.shape_border_width = 3
+      bg.shape_border_width = beautiful.bar_border_width
    elseif c.minimized then
       bg.bg = beautiful.bg_minimize
       bg.shape_border_width = 0

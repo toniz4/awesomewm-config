@@ -8,6 +8,7 @@ local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
+local theme_name = "default"
 local local_themes_path = gfs.get_configuration_dir() .. "icons/"
 local utils = require("utils")
 
@@ -22,23 +23,23 @@ else
    theme.font          = "Go Mono Nerd Font 14"
 end
 
-theme.bg_normal     = "#ccdfff"
-theme.bg_focus      = "#efe9dd"
-theme.bg_alt        = "#BFEFFF"
+theme.bg_normal     = "#000000"
+theme.bg_focus      = "#1e1e1e"
+theme.bg_alt        = "#535353"
 
-theme.bg_urgent     = "#f47359"
-theme.bg_minimize   = "#dfd5cf"
+theme.bg_urgent     = "#9d1f1f"
+theme.bg_minimize   = "#000000"
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#000000"
-theme.fg_focus      = "#000000"
-theme.fg_urgent     = "#000000"
-theme.fg_minimize   = "#193668"
+theme.fg_normal     = "#FFFFFF"
+theme.fg_focus      = "#FFFFFF"
+theme.fg_urgent     = "#FFFFFF"
+theme.fg_minimize   = "#989898"
 
 theme.useless_gap   = 0
 theme.border_width  = dpi(6)
-theme.border_normal = "#9f9690"
-theme.border_focus  = "#0031a9"
+theme.border_normal = "#646464"
+theme.border_focus  = "#1640b0"
 theme.border_marked = "#c37474"
 
 theme.graph_bg = theme.bg_normal
@@ -50,6 +51,8 @@ theme.notification_icon_size = 150
 theme.notification_bg = theme.bg_normal
 theme.notification_border_width = theme.border_width
 theme.notification_border_color = theme.border_focus
+
+theme.bar_border_width = 0
 -- theme.notification
 
 -- There are other variable sets
@@ -132,22 +135,22 @@ theme.wallpaper = gfs.get_configuration_dir() .. "wallpaper"
 -- theme.wallpaper = "#707470"
 
 -- You can use your own layout icons like this:
-theme.layout_fairh = themes_path.."default/layouts/fairh.png"
-theme.layout_fairv = themes_path.."default/layouts/fairv.png"
-theme.layout_floating  = themes_path.."default/layouts/floating.png"
-theme.layout_magnifier = themes_path.."default/layouts/magnifier.png"
-theme.layout_max = themes_path.."default/layouts/max.png"
-theme.layout_fullscreen = themes_path.."default/layouts/fullscreen.png"
-theme.layout_tilebottom = themes_path.."default/layouts/tilebottom.png"
-theme.layout_tileleft   = themes_path.."default/layouts/tileleft.png"
-theme.layout_tile = themes_path.."default/layouts/tile.png"
-theme.layout_tiletop = themes_path.."default/layouts/tiletop.png"
-theme.layout_spiral  = themes_path.."default/layouts/spiral.png"
-theme.layout_dwindle = themes_path.."default/layouts/dwindle.png"
-theme.layout_cornernw = themes_path.."default/layouts/cornernw.png"
-theme.layout_cornerne = themes_path.."default/layouts/cornerne.png"
-theme.layout_cornersw = themes_path.."default/layouts/cornersw.png"
-theme.layout_cornerse = themes_path.."default/layouts/cornerse.png"
+theme.layout_fairh = themes_path..theme_name.."/layouts/fairhw.png"
+theme.layout_fairv = themes_path..theme_name.."/layouts/fairvw.png"
+theme.layout_floating  = themes_path..theme_name.."/layouts/floatingw.png"
+theme.layout_magnifier = themes_path..theme_name.."/layouts/magnifierw.png"
+theme.layout_max = themes_path..theme_name.."/layouts/maxw.png"
+theme.layout_fullscreen = themes_path..theme_name.."/layouts/fullscreenw.png"
+theme.layout_tilebottom = themes_path..theme_name.."/layouts/tilebottomw.png"
+theme.layout_tileleft   = themes_path..theme_name.."/layouts/tileleftww.png"
+theme.layout_tile = themes_path..theme_name.."/layouts/tilew.png"
+theme.layout_tiletop = themes_path..theme_name.."/layouts/tiletopw.png"
+theme.layout_spiral  = themes_path..theme_name.."/layouts/spiralw.png"
+theme.layout_dwindle = themes_path..theme_name.."/layouts/dwindlew.png"
+theme.layout_cornernw = themes_path..theme_name.."/layouts/cornernww.png"
+theme.layout_cornerne = themes_path..theme_name.."/layouts/cornernew.png"
+theme.layout_cornersw = themes_path..theme_name.."/layouts/cornersww.png"
+theme.layout_cornerse = themes_path..theme_name.."/layouts/cornersew.png"
 
 theme.progress_bar_bg = "#363636"
 theme.progress_bar_fg = "#AC8AAC"

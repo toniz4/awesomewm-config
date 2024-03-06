@@ -9,10 +9,11 @@ local memory = util.styled_textarea()
 vicious.cache(vicious.widgets.mem)
 
 local update = function(widget, args)
-   local total_mem = args[3] / 1024
-   local used_mem = args[2] / 1024
-   local total_swp = args[6] / 1024
-   local used_swp = args[7] / 1024
+   local gb = 1000
+   local total_mem = args[3] / gb
+   local used_mem = args[2] / gb
+   local total_swp = args[6] / gb
+   local used_swp = args[7] / gb
    return ("󰍛 %dGB/%dGB %dGB/%dGB"):format(used_mem, total_mem, total_swp, used_swp)
 end
 

@@ -26,7 +26,7 @@ local function update_tag_widget(widget, tag)
 
    if tag.selected then
       widget.background.bg = beautiful.bg_alt
-      widget.background.shape_border_width = 4
+      widget.background.shape_border_width = beautiful.bar_border_width
    elseif tag.urgent then
       widget.background.bg = beautiful.bg_urgent
       widget.background.shape_border_width = 0
@@ -75,7 +75,8 @@ local function taglist(s)
          create_callback = function(self, c3, index, objects)
             update_tag_widget(self, c3)
             self:connect_signal('mouse::enter', function()
-                                   self.background.shape_border_width = 4
+                                   -- self.background.shape_border_width = beautiful.bar_border_width
+                                   self.background.bg = beautiful.border_focus
                                    -- self.background.shape_border_color = beautiful.border_focus
             end)
             self:connect_signal('mouse::leave', function()
